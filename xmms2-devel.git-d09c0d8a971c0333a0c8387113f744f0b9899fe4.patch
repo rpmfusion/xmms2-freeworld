@@ -1,0 +1,65 @@
+From: Anders Waldenborg <andersg@xmms.org>
+Date: Mon, 1 Sep 2008 19:38:43 +0000 (+0200)
+Subject: BUG(2028): Look for avcodec header in subdir aswell.
+X-Git-Url: http://git.xmms.se/?p=xmms2-devel.git;a=commitdiff_plain;h=d09c0d8a971c0333a0c8387113f744f0b9899fe4
+
+BUG(2028): Look for avcodec header in subdir aswell.
+---
+
+diff --git a/src/plugins/avcodec/avcodec.c b/src/plugins/avcodec/avcodec.c
+index 4c212f9..f104662 100644
+--- a/src/plugins/avcodec/avcodec.c
++++ b/src/plugins/avcodec/avcodec.c
+@@ -14,6 +14,7 @@
+  *  Lesser General Public License for more details.
+  */
+ 
++#include "xmms_configuration.h"
+ #include "xmms/xmms_xformplugin.h"
+ #include "xmms/xmms_sample.h"
+ #include "xmms/xmms_log.h"
+@@ -24,7 +25,11 @@
+ #include <glib.h>
+ 
+ #undef ABS
+-#include "avcodec.h"
++#ifdef HAVE_LIBAVCODEC_AVCODEC_H
++# include "libavcodec/avcodec.h"
++#else
++# include "avcodec.h"
++#endif
+ 
+ #define AVCODEC_BUFFER_SIZE 16384
+ 
+diff --git a/src/plugins/avcodec/wscript b/src/plugins/avcodec/wscript
+index 75df380..46774e5 100644
+--- a/src/plugins/avcodec/wscript
++++ b/src/plugins/avcodec/wscript
+@@ -6,7 +6,26 @@ def plugin_configure(conf):
+     cfg.uselib = 'avcodec'
+     cfg.tests = {'--cflags': 'CCFLAGS',
+                  '--plugin-libs avcodec': 'LINKFLAGS'}
+-    return (cfg.run() or conf.check_pkg('libavcodec', destvar='avcodec'))
++    if cfg.run():
++	return True
++
++    if not conf.check_pkg('libavcodec', destvar='avcodec'):
++        return False
++
++    h = conf.create_header_configurator()
++    h.name = "avcodec.h"
++    h.path = conf.env['CPPPATH_avcodec']
++
++    if h.run():
++        return True
++
++    h = conf.create_header_configurator()
++    h.name = "libavcodec/avcodec.h"
++    h.path = conf.env['CPPPATH_avcodec']
++    if h.run():
++        return True
++
++    return False
+ 
+ configure, build = plugin('avcodec', configure=plugin_configure,
+                           source="avcodec.c",
