@@ -1,32 +1,20 @@
-%define codename DrLecter
+%define codename DrMattDestruction
 
 Name:			xmms2-freeworld
-Summary: 		Plugins for XMMS2 that cannot be included in Fedora
-Version:		0.5
-Release:		6%{?dist}
+Summary:		Plugins for XMMS2 that cannot be included in Fedora
+Version:		0.6
+Release:		1%{?dist}
 License:		LGPLv2+ and GPL+ and BSD
 Group:			Applications/Multimedia
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
 Source0:		http://downloads.sourceforge.net/xmms2/xmms2-%{version}%{codename}.tar.bz2
-# From upstream git (Compilation fixes)
-Patch0:			xmms2-devel.git-37578b59f5d7376213da74b3bf6b7c7f430d0bc9.patch
 # Use libdir properly for Fedora multilib
-Patch1:			xmms2-0.5DrLecter-use-libdir.patch
+Patch1:			xmms2-0.6DrMattDestruction-use-libdir.patch
 
 # Don't add extra CFLAGS, we're smart enough, thanks.
-Patch4: 		xmms2-0.5DrLecter-no-O0.patch
+Patch4:			xmms2-0.5DrLecter-no-O0.patch
 # More sane versioning
-Patch5:			xmms2-0.5DrLecter-moresaneversioning.patch
-
-# From upstream git (fix avcodec compilation and bugs)
-Patch10:		xmms2-devel.git-fae1d0cfd643e999d419162979b9c90d12a30002.patch
-Patch11:		xmms2-devel.git-be6f8e111913433a0fee1ddfa3d234067695aadf.patch
-Patch12:		xmms2-devel.git-a63d0f80f384ffd15c921af74f036d785d3b72df.patch
-Patch13:		xmms2-devel.git-6f06f3409dfa82b7a3e7fdd682567d46fd65e262.patch
-Patch14:		xmms2-devel.git-93aab85319fcc168db2d35058e996826a5c6a034.patch
-Patch15:		xmms2-devel.git-d09c0d8a971c0333a0c8387113f744f0b9899fe4.patch
-Patch16:		xmms2-devel.git-a42762549126b8facdab90cf01a17fa106bc8dce.patch
-Patch17:		xmms2-devel.git-fccc583328ca58110a8b6e00ccb8c0bb1f6923ad.patch
+Patch5:			xmms2-0.6DrMattDestruction-moresaneversioning.patch
 
 URL:			http://wiki.xmms2.xmms.se/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -35,15 +23,12 @@ BuildRequires:		glib2-devel
 BuildRequires:		python-devel
 # RPMFusion only BuildRequires
 BuildRequires:		faad2-devel, libmad-devel, ffmpeg-devel, libmms-devel
-# Keep the mac plugin disabled until mac goes to free repo
-#BuildRequires:		mac-devel
 
 Requires:		xmms2-avcodec = %{version}-%{release}
 Requires:		xmms2-faad = %{version}-%{release}
 Requires:		xmms2-mad = %{version}-%{release}
 Requires:		xmms2-mms = %{version}-%{release}
 Requires:		xmms2-mp4 = %{version}-%{release}
-#Requires:		xmms2-mac = %%{version}-%%{release}
 
 
 %description
@@ -78,15 +63,6 @@ Requires:	xmms2 = %{version}
 An XMMS2 Plugin which provides support for audio formats provided by FAAD 
 (AAC and MP4).
 
-#%%package -n xmms2-mac
-#Summary:	XMMS2 Plugin for APE audio format
-#License:	GPLv2+
-#Group:		Applications/Multimedia
-#Requires:	xmms2 = %%{version}
-
-#%%description -n xmms2-mac
-#An XMMS2 Plugin for listening to Monkey's Audio files.
-
 %package -n xmms2-mad
 Summary:	XMMS2 Plugin for MPEG Audio files
 License:	GPLv2+
@@ -117,20 +93,11 @@ An XMMS2 Plugin for listening to MP4 audio files.
 
 %prep
 %setup -q -n xmms2-%{version}%{codename}
-%patch0 -p1 -b .compilefix
+
 %patch1 -p1 -b .plugins-use-libdir
 
 %patch4 -p1 -b .noO0
 %patch5 -p1 -b .versionsanity
-
-%patch10 -p1 -b .avcodec10
-%patch11 -p1 -b .avcodec11
-%patch12 -p1 -b .avcodec12
-%patch13 -p1 -b .avcodec13
-%patch14 -p1 -b .avcodec14
-%patch15 -p1 -b .avcodec15
-%patch16 -p1 -b .avcodec16
-%patch17 -p1 -b .avcodec17
 
 
 # Clean up paths in wafadmin
@@ -150,16 +117,19 @@ export CFLAGS="%{optflags}"
 		--without-optionals=et \
 		--without-optionals=launcher \
 		--without-optionals=medialib-updater \
+		--without-optionals=nycli \
 		--without-optionals=perl \
 		--without-optionals=pixmaps \
 		--without-optionals=python \
 		--without-optionals=ruby \
+		--without-optionals=vistest \
 		--without-optionals=xmmsclient-ecore \
 		--without-optionals=xmmsclient++ \
 		--without-optionals=xmmsclient++-glib \
 		--without-plugins=airplay \
 		--without-plugins=alsa \
 		--without-plugins=ao \
+		--without-plugins=apefile \
 		--without-plugins=asf \
 		--without-plugins=asx \
 		--without-plugins=cdda \
@@ -171,15 +141,15 @@ export CFLAGS="%{optflags}"
 		--without-plugins=curl \
 		--without-plugins=file \
 		--without-plugins=flac \
+		--without-plugins=flv \
 		--without-plugins=gme \
 		--without-plugins=gvfs \
+		--without-plugins=html \
 		--without-plugins=ices \
 		--without-plugins=icymetaint \
 		--without-plugins=id3v2 \
 		--without-plugins=jack \
 		--without-plugins=karaoke \
-		--without-plugins=lastfm \
-		--without-plugins=lastfmeta \
 		--without-plugins=m3u \
 		--without-plugins=modplug \
 		--without-plugins=musepack \
@@ -194,6 +164,7 @@ export CFLAGS="%{optflags}"
 		--without-plugins=rss \
 		--without-plugins=samba \
 		--without-plugins=speex \
+		--without-plugins=tta \
 		--without-plugins=vocoder \
 		--without-plugins=vorbis \
 		--without-plugins=wave \
@@ -229,11 +200,6 @@ rm -rf %{buildroot}
 %doc COPYING.GPL
 %{_libdir}/xmms2/libxmms_faad.so
 
-#%%files -n xmms2-mac
-#%%defattr(-,root,root,-)
-#%%doc COPYING.GPL
-#%%{_libdir}/xmms2/libxmms_mac.so
-
 %files -n xmms2-mad
 %defattr(-,root,root,-)
 %doc COPYING.GPL
@@ -250,6 +216,9 @@ rm -rf %{buildroot}
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Wed Aug 12 2009 John Doe <anonymous@american.us> 0.6-1
+- Update to 0.6
+
 * Sun Mar 29 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.5-6
 - rebuild for new F11 features
 
