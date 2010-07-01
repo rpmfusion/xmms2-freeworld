@@ -1,20 +1,20 @@
-%define codename DrMattDestruction
+%define codename DrNo
 
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
-Version:		0.6
+Version:		0.7
 Release:		1%{?dist}
 License:		LGPLv2+ and GPL+ and BSD
 Group:			Applications/Multimedia
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
 Source0:		http://downloads.sourceforge.net/xmms2/xmms2-%{version}%{codename}.tar.bz2
 # Use libdir properly for Fedora multilib
-Patch1:			xmms2-0.6DrMattDestruction-use-libdir.patch
+Patch1:			xmms2-0.7DrNo-use-libdir.patch
 
 # Don't add extra CFLAGS, we're smart enough, thanks.
-Patch4:			xmms2-0.5DrLecter-no-O0.patch
+Patch4:			xmms2-0.7DrNo-no-O0.patch
 # More sane versioning
-Patch5:			xmms2-0.6DrMattDestruction-moresaneversioning.patch
+Patch5:			xmms2-0.7DrNo-moresaneversioning.patch
 
 URL:			http://wiki.xmms2.xmms.se/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -109,7 +109,7 @@ done
 %build
 export CFLAGS="%{optflags}"
 ./waf configure --prefix=%{_prefix} \
-		--with-libdir=%{_libdir} \
+		--libdir=%{_libdir} \
 		--with-pkgconfigdir=%{_libdir}/pkgconfig \
 		--without-optionals=avahi \
 		--without-optionals=cli \
@@ -175,7 +175,7 @@ export CFLAGS="%{optflags}"
 
 %install
 rm -rf %{buildroot}
-./waf install --destdir=%{buildroot} --prefix=%{_prefix} --with-libdir=%{_libdir} --with-pkgconfigdir=%{_libdir}/pkgconfig
+./waf install --destdir=%{buildroot} --prefix=%{_prefix} --libdir=%{_libdir} --with-pkgconfigdir=%{_libdir}/pkgconfig
 
 # There are lots of things that get built that we don't need to package, because they're in the Fedora xmms2 package.
 rm -rf %{buildroot}%{_bindir} %{buildroot}%{_libdir}/libxmmsclient* %{buildroot}%{_mandir} %{buildroot}%{_datadir} %{buildroot}%{_includedir} %{buildroot}%{_libdir}/pkgconfig 
@@ -216,6 +216,9 @@ rm -rf %{buildroot}
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Thu Jul 01 2010 John Doe <anonymous@american.us> 0.7-1
+- Update to 0.7
+
 * Wed Aug 12 2009 John Doe <anonymous@american.us> 0.6-1
 - Update to 0.6
 
