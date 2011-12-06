@@ -1,22 +1,17 @@
-%define codename DrNo
+%define codename DrO_o
 
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
-Version:		0.7
-Release:		3%{?dist}
+Version:		0.8
+Release:		1%{?dist}
 License:		LGPLv2+ and GPL+ and BSD
 Group:			Applications/Multimedia
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
 Source0:		http://downloads.sourceforge.net/xmms2/xmms2-%{version}%{codename}.tar.bz2
 # Use libdir properly for Fedora multilib
-Patch1:			xmms2-0.7DrNo-use-libdir.patch
-
+Patch0:			xmms2-0.8DrO_o-use-libdir.patch
 # Don't add extra CFLAGS, we're smart enough, thanks.
-Patch4:			xmms2-0.7DrNo-no-O0.patch
-# More sane versioning
-Patch5:			xmms2-0.7DrNo-moresaneversioning.patch
-# Compatibility with newer ffmpeg
-Patch6:			xmms2-ffmpeg.patch
+Patch1:			xmms2-0.8DrO_o-no-O0.patch
 
 URL:			http://wiki.xmms2.xmms.se/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -96,26 +91,15 @@ An XMMS2 Plugin for listening to MP4 audio files.
 %prep
 %setup -q -n xmms2-%{version}%{codename}
 
-%patch1 -p1 -b .plugins-use-libdir
+%patch0 -p1 -b .plugins-use-libdir
+%patch1 -p1 -b .noO0
 
-%patch4 -p1 -b .noO0
-%patch5 -p1 -b .versionsanity
-%patch6 -p1 -b .ffmpeg
-
-# Clean up paths in wafadmin
-WAFADMIN_FILES=`find wafadmin/ -type f`
-for i in $WAFADMIN_FILES; do
-	 sed -i 's|/usr/lib|%{_libdir}|g' $i
-done
 
 %build
 export CFLAGS="%{optflags}"
 ./waf configure --prefix=%{_prefix} \
 		--libdir=%{_libdir} \
 		--with-pkgconfigdir=%{_libdir}/pkgconfig \
-		--without-optionals=avahi \
-		--without-optionals=cli \
-		--without-optionals=dns_sd \
 		--without-optionals=et \
 		--without-optionals=launcher \
 		--without-optionals=medialib-updater \
@@ -218,6 +202,9 @@ rm -rf %{buildroot}
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Mon Dec 05 2011 John Doe <anonymous@american.us> 0.8-1
+- Update to 0.8
+
 * Wed Oct 05 2011 John Doe <anonymous@american.us> 0.7-3
 - Patch for new ffmpeg thanks to rathann!
 
