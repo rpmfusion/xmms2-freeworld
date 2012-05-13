@@ -3,7 +3,7 @@
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
 Version:		0.8
-Release:		1%{?dist}
+Release:		2%{?dist}
 License:		LGPLv2+ and GPL+ and BSD
 Group:			Applications/Multimedia
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
@@ -138,6 +138,7 @@ export CFLAGS="%{optflags}"
 		--without-plugins=karaoke \
 		--without-plugins=m3u \
 		--without-plugins=modplug \
+		--without-plugins=mpg123 \
 		--without-plugins=musepack \
 		--without-plugins=normalize \
 		--without-plugins=null \
@@ -149,11 +150,13 @@ export CFLAGS="%{optflags}"
 		--without-plugins=replaygain \
 		--without-plugins=rss \
 		--without-plugins=samba \
+		--without-plugins=sndfile \
 		--without-plugins=speex \
 		--without-plugins=tta \
 		--without-plugins=vocoder \
 		--without-plugins=vorbis \
 		--without-plugins=wave \
+		--without-plugins=wavpack \
 		--without-plugins=xml \
 		--without-plugins=xspf 
 
@@ -202,6 +205,9 @@ rm -rf %{buildroot}
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Sun May 13 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.8-2
+- Rebuilt for F-17
+
 * Mon Dec 05 2011 John Doe <anonymous@american.us> 0.8-1
 - Update to 0.8
 
