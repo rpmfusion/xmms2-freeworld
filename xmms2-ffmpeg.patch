@@ -1,6 +1,14 @@
 diff -rupN xmms2-0.8DrO_o.old/src/plugins/avcodec/avcodec.c xmms2-0.8DrO_o/src/plugins/avcodec/avcodec.c
 --- xmms2-0.8DrO_o.old/src/plugins/avcodec/avcodec.c	2011-10-20 15:26:08.000000000 -0400
 +++ xmms2-0.8DrO_o/src/plugins/avcodec/avcodec.c	2012-11-01 21:36:57.426070895 -0400
+@@ -27,6 +27,7 @@
+ #include "avcodec_compat.h"
+ 
+ #define AVCODEC_BUFFER_SIZE 16384
++#define MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
+ 
+ typedef struct {
+ 	AVCodecContext *codecctx;
 @@ -200,7 +200,7 @@ xmms_avcodec_init (xmms_xform_t *xform)
  		}
  	}
@@ -19,6 +27,24 @@ diff -rupN xmms2-0.8DrO_o.old/src/plugins/avcodec/avcodec.c xmms2-0.8DrO_o/src/p
  		XMMS_DBG ("Opening decoder '%s' failed", codec->name);
  		goto err;
  	} else {
+@@ -263,7 +264,7 @@ xmms_avcodec_read (xmms_xform_t *xform,
+                    xmms_error_t *error)
+ {
+ 	xmms_avcodec_data_t *data;
+-	char outbuf[AVCODEC_MAX_AUDIO_FRAME_SIZE];
++	char outbuf[MAX_AUDIO_FRAME_SIZE];
+ 	gint outbufsize, bytes_read = 0;
+ 	guint size;
+ 
+@@ -371,7 +372,7 @@ static gint64
+ xmms_avcodec_seek (xmms_xform_t *xform, gint64 samples, xmms_xform_seek_mode_t whence, xmms_error_t *err)
+ {
+ 	xmms_avcodec_data_t *data;
+-	char outbuf[AVCODEC_MAX_AUDIO_FRAME_SIZE];
++	char outbuf[MAX_AUDIO_FRAME_SIZE];
+ 	gint outbufsize, bytes_read = 0;
+ 	gint64 ret = -1;
+ 
 diff -rupN xmms2-0.8DrO_o.old/src/plugins/avcodec/avcodec_compat.h xmms2-0.8DrO_o/src/plugins/avcodec/avcodec_compat.h
 --- xmms2-0.8DrO_o.old/src/plugins/avcodec/avcodec_compat.h	2011-10-20 15:26:08.000000000 -0400
 +++ xmms2-0.8DrO_o/src/plugins/avcodec/avcodec_compat.h	2012-11-01 21:35:50.276405569 -0400
