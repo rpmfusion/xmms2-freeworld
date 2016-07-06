@@ -3,7 +3,7 @@
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
 Version:		0.8
-Release:		14%{?dist}
+Release:		15%{?dist}
 License:		LGPLv2+ and GPL+ and BSD
 Group:			Applications/Multimedia
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
@@ -12,8 +12,11 @@ Source0:		http://downloads.sourceforge.net/xmms2/xmms2-%{version}%{codename}.tar
 Patch0:			xmms2-0.8DrO_o-use-libdir.patch
 # Don't add extra CFLAGS, we're smart enough, thanks.
 Patch1:			xmms2-0.8DrO_o-no-O0.patch
-# Fix compilation against newer ffmpeg
-Patch2:		  	xmms2-ffmpeg.patch
+# Fix compilation against newer ffmpeg (patches from debian)
+Patch2:                 bp-fix-avcodec-init.patch
+Patch3:                 bp-fix-alloc-context.patch
+Patch4:                 bp-fix-missing-include.patch
+Patch5:                 libav10.patch
 
 URL:			http://wiki.xmms2.xmms.se/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -95,7 +98,10 @@ An XMMS2 Plugin for listening to MP4 audio files.
 
 %patch0 -p1 -b .plugins-use-libdir
 %patch1 -p1 -b .noO0
-%patch2 -p1 -b .oldffmpeg
+%patch2 -p1
+%patch3 -p1 
+%patch4 -p1
+%patch5 -p1
 
 
 %build
@@ -208,6 +214,9 @@ rm -rf %{buildroot}
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Wed Jul 06 2016 Leigh Scott <leigh123linux@googlemail.com> - 0.8-15
+- Patch for newer ffmpeg
+
 * Mon Oct 20 2014 Sérgio Basto <sergio@serjux.com> - 0.8-14
 - Rebuilt for FFmpeg 2.4.3
 
