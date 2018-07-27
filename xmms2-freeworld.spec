@@ -22,7 +22,7 @@ URL:			http://wiki.xmms2.xmms.se/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:		sqlite-devel
 BuildRequires:		glib2-devel
-BuildRequires:		python-devel
+BuildRequires:		python2-devel
 # RPMFusion only BuildRequires
 BuildRequires:		faad2-devel, libmad-devel, ffmpeg-devel, libmms-devel
 
@@ -102,6 +102,10 @@ An XMMS2 Plugin for listening to MP4 audio files.
 %patch3 -p1 
 %patch4 -p1
 %patch5 -p1
+
+for i in doc/tutorial/python/tut1.py doc/tutorial/python/tut2.py doc/tutorial/python/tut3.py doc/tutorial/python/tut4.py doc/tutorial/python/tut5.py doc/tutorial/python/tut6.py utils/gen-tree-hashes.py utils/gen-wiki-release-bugs.py utils/gen-tarball.py utils/gen-wiki-release-authors.py waf waftools/podselect.py waftools/genipc.py waftools/genipc_server.py waftools/cython.py; do
+	sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python2|g' $i
+done
 
 
 %build
