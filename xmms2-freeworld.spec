@@ -5,7 +5,7 @@ Summary:		Plugins for XMMS2 that cannot be included in Fedora
 Version:		0.8
 Release:		25%{?dist}
 License:		LGPLv2+ and GPL+ and BSD
-Group:			Applications/Multimedia
+URL:			http://wiki.xmms2.xmms.se/
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
 Source0:		http://downloads.sourceforge.net/xmms2/xmms2-%{version}%{codename}.tar.bz2
 # Use libdir properly for Fedora multilib
@@ -18,8 +18,7 @@ Patch3:                 bp-fix-alloc-context.patch
 Patch4:                 bp-fix-missing-include.patch
 Patch5:                 libav10.patch
 
-URL:			http://wiki.xmms2.xmms.se/
-BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:		gcc
 BuildRequires:		sqlite-devel
 BuildRequires:		glib2-devel
 BuildRequires:		python2-devel
@@ -47,7 +46,6 @@ client (such as gxmms2 or esperanza).
 %package -n xmms2-avcodec
 Summary:	XMMS2 Plugin for avcodec supported formats
 License:	LGPLv2+
-Group:		Applications/Multimedia
 Requires:	xmms2 = %{version}
 
 %description -n xmms2-avcodec
@@ -58,7 +56,6 @@ FFMPEG's libavcodec.
 %package -n xmms2-faad
 Summary:	XMMS2 Plugin for AAC and MP4 audio formats
 License:	GPLv2+
-Group:		Applications/Multimedia
 Requires:	xmms2 = %{version}
 
 %description -n xmms2-faad
@@ -68,7 +65,6 @@ An XMMS2 Plugin which provides support for audio formats provided by FAAD
 %package -n xmms2-mad
 Summary:	XMMS2 Plugin for MPEG Audio files
 License:	GPLv2+
-Group:		Applications/Multimedia
 Requires:	xmms2 = %{version}
 
 %description -n xmms2-mad
@@ -78,7 +74,6 @@ An XMMS2 Plugin for listening to MPEG files (MPEG 1 & 2 layers I, II and III
 %package -n xmms2-mms
 Summary:	XMMS2 Plugin for MMS audio streams
 License:	LGPLv2+
-Group:		Applications/Multimedia
 Requires:	xmms2 = %{version}
 
 %description -n xmms2-mms
@@ -87,7 +82,6 @@ An XMMS2 Plugin for listening to Microsoft Media Services (MMS) audio streams.
 %package -n xmms2-mp4
 Summary:	XMMS2 Plugin for MP4 audio
 License:	GPLv2+
-Group:		Applications/Multimedia
 Requires:	xmms2 = %{version}
 
 %description -n xmms2-mp4
@@ -176,7 +170,6 @@ export CFLAGS="%{optflags}"
 ./waf build -v %{?_smp_mflags}
 
 %install
-rm -rf %{buildroot}
 ./waf install --destdir=%{buildroot} --prefix=%{_prefix} --libdir=%{_libdir} --with-pkgconfigdir=%{_libdir}/pkgconfig
 
 # There are lots of things that get built that we don't need to package, because they're in the Fedora xmms2 package.
@@ -185,41 +178,33 @@ rm -rf %{buildroot}%{_bindir} %{buildroot}%{_libdir}/libxmmsclient* %{buildroot}
 # exec flags for debuginfo
 chmod +x %{buildroot}%{_libdir}/xmms2/*
 
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root,-)
 %doc COPYING COPYING.GPL COPYING.LGPL
 
 %files -n xmms2-avcodec
-%defattr(-,root,root,-)
 %doc COPYING.LGPL
 %{_libdir}/xmms2/libxmms_avcodec.so
 
 %files -n xmms2-faad
-%defattr(-,root,root,-)
 %doc COPYING.GPL
 %{_libdir}/xmms2/libxmms_faad.so
 
 %files -n xmms2-mad
-%defattr(-,root,root,-)
 %doc COPYING.GPL
 %{_libdir}/xmms2/libxmms_mad.so
 
 %files -n xmms2-mms
-%defattr(-,root,root,-)
 %doc COPYING.LGPL
 %{_libdir}/xmms2/libxmms_mms.so
 
 %files -n xmms2-mp4
-%defattr(-,root,root,-)
 %doc COPYING.GPL
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
 * Tue Mar 05 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 0.8-25
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+- Spec file clean up
 
 * Sun Aug 19 2018 Leigh Scott <leigh123linux@googlemail.com> - 0.8-24
 - Rebuilt for Fedora 29 Mass Rebuild binutils issue
