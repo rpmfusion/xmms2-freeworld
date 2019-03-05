@@ -18,7 +18,7 @@ Patch3:                 bp-fix-alloc-context.patch
 Patch4:                 bp-fix-missing-include.patch
 Patch5:                 libav10.patch
 
-BuildRequires:		gcc
+BuildRequires:		gcc-c++
 BuildRequires:		sqlite-devel
 BuildRequires:		glib2-devel
 BuildRequires:		python2-devel
