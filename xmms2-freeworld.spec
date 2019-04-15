@@ -3,7 +3,7 @@
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
 Version:		0.8
-Release:		25%{?dist}
+Release:		26%{?dist}
 License:		LGPLv2+ and GPL+ and BSD
 URL:			http://wiki.xmms2.xmms.se/
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
@@ -23,11 +23,10 @@ BuildRequires:		sqlite-devel
 BuildRequires:		glib2-devel
 BuildRequires:		python2-devel
 # RPMFusion only BuildRequires
-BuildRequires:		faad2-devel, libmad-devel, ffmpeg-devel, libmms-devel
+BuildRequires:		faad2-devel, ffmpeg-devel, libmms-devel
 
 Requires:		xmms2-avcodec = %{version}-%{release}
 Requires:		xmms2-faad = %{version}-%{release}
-Requires:		xmms2-mad = %{version}-%{release}
 Requires:		xmms2-mms = %{version}-%{release}
 Requires:		xmms2-mp4 = %{version}-%{release}
 
@@ -61,15 +60,6 @@ Requires:	xmms2 = %{version}
 %description -n xmms2-faad
 An XMMS2 Plugin which provides support for audio formats provided by FAAD 
 (AAC and MP4).
-
-%package -n xmms2-mad
-Summary:	XMMS2 Plugin for MPEG Audio files
-License:	GPLv2+
-Requires:	xmms2 = %{version}
-
-%description -n xmms2-mad
-An XMMS2 Plugin for listening to MPEG files (MPEG 1 & 2 layers I, II and III 
-- includes MP3).
 
 %package -n xmms2-mms
 Summary:	XMMS2 Plugin for MMS audio streams
@@ -143,6 +133,7 @@ export CFLAGS="%{optflags}"
 		--without-plugins=id3v2 \
 		--without-plugins=jack \
 		--without-plugins=karaoke \
+		--without-plugins=mad \
 		--without-plugins=m3u \
 		--without-plugins=modplug \
 		--without-plugins=mpg123 \
@@ -189,10 +180,6 @@ chmod +x %{buildroot}%{_libdir}/xmms2/*
 %doc COPYING.GPL
 %{_libdir}/xmms2/libxmms_faad.so
 
-%files -n xmms2-mad
-%doc COPYING.GPL
-%{_libdir}/xmms2/libxmms_mad.so
-
 %files -n xmms2-mms
 %doc COPYING.LGPL
 %{_libdir}/xmms2/libxmms_mms.so
@@ -202,6 +189,9 @@ chmod +x %{buildroot}%{_libdir}/xmms2/*
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Mon Apr 15 2019 Xavier Bachelot <xavier@bachelot.org> - 0.8-26
+- Drop mad sub-package, libmad is now in Fedora.
+
 * Tue Mar 05 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 0.8-25
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 - Spec file clean up
