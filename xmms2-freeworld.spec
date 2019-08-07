@@ -3,7 +3,7 @@
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
 Version:		0.8
-Release:		26%{?dist}
+Release:		27%{?dist}
 License:		LGPLv2+ and GPL+ and BSD
 URL:			http://wiki.xmms2.xmms.se/
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
@@ -189,6 +189,9 @@ chmod +x %{buildroot}%{_libdir}/xmms2/*
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Wed Aug 07 2019 Leigh Scott <leigh123linux@gmail.com> - 0.8-27
+- Rebuild for new ffmpeg version
+
 * Mon Apr 15 2019 Xavier Bachelot <xavier@bachelot.org> - 0.8-26
 - Drop mad sub-package, libmad is now in Fedora.
 
