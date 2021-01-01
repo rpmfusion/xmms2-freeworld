@@ -3,7 +3,7 @@
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
 Version:		0.8
-Release:		30%{?dist}
+Release:		31%{?dist}
 License:		LGPLv2+ and GPL+ and BSD
 URL:			http://wiki.xmms2.xmms.se/
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
@@ -189,6 +189,9 @@ chmod +x %{buildroot}%{_libdir}/xmms2/*
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Fri Jan  1 2021 Leigh Scott <leigh123linux@gmail.com> - 0.8-31
+- Rebuilt for new ffmpeg snapshot
+
 * Wed Aug 19 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 0.8-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
