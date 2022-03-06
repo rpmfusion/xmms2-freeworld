@@ -23,7 +23,13 @@ BuildRequires:		sqlite-devel
 BuildRequires:		glib2-devel
 BuildRequires:		python2-devel
 # RPMFusion only BuildRequires
-BuildRequires:		faad2-devel, ffmpeg-devel, libmms-devel
+BuildRequires:		faad2-devel
+%if 0%{?fedora} && 0%{?fedora} > 35
+BuildRequires:		compat-ffmpeg4-devel
+%else
+BuildRequires:		ffmpeg-devel
+%endif
+BuildRequires:		libmms-devel
 
 Requires:		xmms2-avcodec = %{version}-%{release}
 Requires:		xmms2-faad = %{version}-%{release}
@@ -94,6 +100,9 @@ done
 
 %build
 export CFLAGS="%{optflags}"
+%if 0%{?fedora} && 0%{?fedora} > 35
+export PKG_CONFIG_PATH="%{_libdir}/compat-ffmpeg4/pkgconfig"
+%endif
 ./waf configure --prefix=%{_prefix} \
 		--libdir=%{_libdir} \
 		--with-pkgconfigdir=%{_libdir}/pkgconfig \
