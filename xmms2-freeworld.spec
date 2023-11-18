@@ -1,22 +1,11 @@
-%define codename DrO_o
-
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
-Version:		0.8
-Release:		38%{?dist}
-License:		LGPLv2+ and GPL+ and BSD
+Version:		0.9.3
+Release:		1%{?dist}
+License:		LGPL-2.1-or-later AND GPL-2.0-or-later AND BSD-3-Clause
 URL:			http://wiki.xmms2.xmms.se/
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
-Source0:		http://downloads.sourceforge.net/xmms2/xmms2-%{version}%{codename}.tar.bz2
-# Use libdir properly for Fedora multilib
-Patch0:			xmms2-0.8DrO_o-use-libdir.patch
-# Don't add extra CFLAGS, we're smart enough, thanks.
-Patch1:			xmms2-0.8DrO_o-no-O0.patch
-# Fix compilation against newer ffmpeg (patches from debian)
-Patch2:                 bp-fix-avcodec-init.patch
-Patch3:                 bp-fix-alloc-context.patch
-Patch4:                 bp-fix-missing-include.patch
-Patch5:                 libav10.patch
+Source0:		https://github.com/xmms2/xmms2-devel/releases/download/%{version}/xmms2-%{version}.tar.xz
 
 BuildRequires:		gcc-c++
 BuildRequires:		sqlite-devel
@@ -84,14 +73,7 @@ Requires:	xmms2 = %{version}
 An XMMS2 Plugin for listening to MP4 audio files.
 
 %prep
-%setup -q -n xmms2-%{version}%{codename}
-
-%patch0 -p1 -b .plugins-use-libdir
-%patch1 -p1 -b .noO0
-%patch2 -p1
-%patch3 -p1 
-%patch4 -p1
-%patch5 -p1
+%autosetup -p1 -n xmms2-%{version}
 
 for i in doc/tutorial/python/tut1.py doc/tutorial/python/tut2.py doc/tutorial/python/tut3.py doc/tutorial/python/tut4.py doc/tutorial/python/tut5.py doc/tutorial/python/tut6.py utils/gen-tree-hashes.py utils/gen-wiki-release-bugs.py utils/gen-tarball.py utils/gen-wiki-release-authors.py waf waftools/podselect.py waftools/genipc.py waftools/genipc_server.py waftools/cython.py; do
 	sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python2|g' $i
@@ -100,72 +82,17 @@ done
 
 %build
 export CFLAGS="%{optflags}"
+export CPPFLAGS="%{optflags}"
 %if 0%{?fedora} && 0%{?fedora} > 35
 export PKG_CONFIG_PATH="%{_libdir}/compat-ffmpeg4/pkgconfig"
 %endif
 ./waf configure --prefix=%{_prefix} \
-		--libdir=%{_libdir} \
-		--with-pkgconfigdir=%{_libdir}/pkgconfig \
-		--without-optionals=et \
-		--without-optionals=launcher \
-		--without-optionals=medialib-updater \
-		--without-optionals=nycli \
-		--without-optionals=perl \
-		--without-optionals=pixmaps \
-		--without-optionals=python \
-		--without-optionals=ruby \
-		--without-optionals=vistest \
-		--without-optionals=xmmsclient-ecore \
-		--without-optionals=xmmsclient++ \
-		--without-optionals=xmmsclient++-glib \
-		--without-plugins=airplay \
-		--without-plugins=alsa \
-		--without-plugins=ao \
-		--without-plugins=apefile \
-		--without-plugins=asf \
-		--without-plugins=asx \
-		--without-plugins=cdda \
-		--without-plugins=cue \
-		--without-plugins=curl \
-		--without-plugins=daap \
-		--without-plugins=diskwrite \
-		--without-plugins=equalizer \
-		--without-plugins=curl \
-		--without-plugins=file \
-		--without-plugins=flac \
-		--without-plugins=flv \
-		--without-plugins=gme \
-		--without-plugins=gvfs \
-		--without-plugins=html \
-		--without-plugins=ices \
-		--without-plugins=icymetaint \
-		--without-plugins=id3v2 \
-		--without-plugins=jack \
-		--without-plugins=karaoke \
-		--without-plugins=mad \
-		--without-plugins=m3u \
-		--without-plugins=modplug \
-		--without-plugins=mpg123 \
-		--without-plugins=musepack \
-		--without-plugins=normalize \
-		--without-plugins=null \
-		--without-plugins=nulstripper \
-		--without-plugins=ofa \
-		--without-plugins=oss \
-		--without-plugins=pls \
-		--without-plugins=pulse \
-		--without-plugins=replaygain \
-		--without-plugins=rss \
-		--without-plugins=samba \
-		--without-plugins=sndfile \
-		--without-plugins=speex \
-		--without-plugins=tta \
-		--without-plugins=vocoder \
-		--without-plugins=vorbis \
-		--without-plugins=wave \
-		--without-plugins=wavpack \
-		--without-plugins=xml \
-		--without-plugins=xspf 
+ --libdir=%{_libdir} \
+ --without-optionals="launcher,xmmsclient++,xmmsclient++-glib,perl,ruby,nycli,pixmaps,et,mdns, \
+ medialib-updater,migrate-collections,vistest,sqlite2s4" \
+ --without-plugins="airplay,alsa,ao,apefile,asf,asx,cdda,cue,curl,daap,diskwrite,equalizer,curl,file,flac, \
+ flv,gme,gvfs,html,ices,icymetaint,id3v2,jack,karaoke,mad,m3u,mid1,midsquash,modplug,mpg123,musepack,normalize, \
+ null,nulstripper,ofa,oss,pls,pulse,replaygain,rss,samba,sndfile,speex,tta,vocoder,vorbis,wave,wavpack,xml,xspf"
 
 ./waf build -v %{?_smp_mflags}
 
@@ -179,25 +106,28 @@ rm -rf %{buildroot}%{_bindir} %{buildroot}%{_libdir}/libxmmsclient* %{buildroot}
 chmod +x %{buildroot}%{_libdir}/xmms2/*
 
 %files
-%doc COPYING COPYING.GPL COPYING.LGPL
+%licence COPYING COPYING.GPL COPYING.LGPL
 
 %files -n xmms2-avcodec
-%doc COPYING.LGPL
+%licence COPYING.LGPL
 %{_libdir}/xmms2/libxmms_avcodec.so
 
 %files -n xmms2-faad
-%doc COPYING.GPL
+%licence COPYING.GPL
 %{_libdir}/xmms2/libxmms_faad.so
 
 %files -n xmms2-mms
-%doc COPYING.LGPL
+%licence COPYING.LGPL
 %{_libdir}/xmms2/libxmms_mms.so
 
 %files -n xmms2-mp4
-%doc COPYING.GPL
+%licence COPYING.GPL
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Sat Nov 18 2023 Leigh Scott <leigh123linux@gmail.com> - 0.9.3-1
+- update to 0.9.3
+
 * Wed Nov 08 2023 Leigh Scott <leigh123linux@gmail.com> - 0.8-38
 - Rebuild for new faad2 version
 
