@@ -106,22 +106,22 @@ rm -rf %{buildroot}%{_bindir} %{buildroot}%{_libdir}/libxmmsclient* %{buildroot}
 chmod +x %{buildroot}%{_libdir}/xmms2/*
 
 %files
-%licence COPYING COPYING.GPL COPYING.LGPL
+%license COPYING COPYING.GPL COPYING.LGPL
 
 %files -n xmms2-avcodec
-%licence COPYING.LGPL
+%license COPYING.LGPL
 %{_libdir}/xmms2/libxmms_avcodec.so
 
 %files -n xmms2-faad
-%licence COPYING.GPL
+%license COPYING.GPL
 %{_libdir}/xmms2/libxmms_faad.so
 
 %files -n xmms2-mms
-%licence COPYING.LGPL
+%license COPYING.LGPL
 %{_libdir}/xmms2/libxmms_mms.so
 
 %files -n xmms2-mp4
-%licence COPYING.GPL
+%license COPYING.GPL
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
