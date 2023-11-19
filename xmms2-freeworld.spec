@@ -1,7 +1,7 @@
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
 Version:		0.9.3
-Release:		1%{?dist}
+Release:		2%{?dist}
 License:		LGPL-2.1-or-later AND GPL-2.0-or-later AND BSD-3-Clause
 URL:			http://wiki.xmms2.xmms.se/
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
@@ -18,12 +18,10 @@ BuildRequires:		compat-ffmpeg4-devel
 %else
 BuildRequires:		ffmpeg-devel
 %endif
-BuildRequires:		libmms-devel
 
-Requires:		xmms2-avcodec = %{version}-%{release}
-Requires:		xmms2-faad = %{version}-%{release}
-Requires:		xmms2-mms = %{version}-%{release}
-Requires:		xmms2-mp4 = %{version}-%{release}
+Requires:		xmms2-avcodec%{?_isa} = %{version}-%{release}
+Requires:		xmms2-faad%{?_isa} = %{version}-%{release}
+Requires:		xmms2-mp4%{?_isa} = %{version}-%{release}
 
 
 %description
@@ -40,7 +38,7 @@ client (such as gxmms2 or esperanza).
 %package -n xmms2-avcodec
 Summary:	XMMS2 Plugin for avcodec supported formats
 License:	LGPLv2+
-Requires:	xmms2 = %{version}
+Requires:	xmms2%{?_isa} = %{version}
 
 %description -n xmms2-avcodec
 An XMMS2 Plugin which provides support for audio formats provided by
@@ -50,24 +48,16 @@ FFMPEG's libavcodec.
 %package -n xmms2-faad
 Summary:	XMMS2 Plugin for AAC and MP4 audio formats
 License:	GPLv2+
-Requires:	xmms2 = %{version}
+Requires:	xmms2%{?_isa} = %{version}
 
 %description -n xmms2-faad
 An XMMS2 Plugin which provides support for audio formats provided by FAAD 
 (AAC and MP4).
 
-%package -n xmms2-mms
-Summary:	XMMS2 Plugin for MMS audio streams
-License:	LGPLv2+
-Requires:	xmms2 = %{version}
-
-%description -n xmms2-mms
-An XMMS2 Plugin for listening to Microsoft Media Services (MMS) audio streams.
-
 %package -n xmms2-mp4
 Summary:	XMMS2 Plugin for MP4 audio
 License:	GPLv2+
-Requires:	xmms2 = %{version}
+Requires:	xmms2%{?_isa} = %{version}
 
 %description -n xmms2-mp4
 An XMMS2 Plugin for listening to MP4 audio files.
@@ -91,7 +81,7 @@ export PKG_CONFIG_PATH="%{_libdir}/compat-ffmpeg4/pkgconfig"
  --without-optionals="launcher,xmmsclient++,xmmsclient++-glib,perl,ruby,nycli,pixmaps,et,mdns, \
  medialib-updater,migrate-collections,vistest,sqlite2s4" \
  --without-plugins="airplay,alsa,ao,apefile,asf,asx,cdda,cue,curl,daap,diskwrite,equalizer,curl,file,flac, \
- flv,gme,gvfs,html,ices,icymetaint,id3v2,jack,karaoke,mad,m3u,mid1,midsquash,modplug,mpg123,musepack,normalize, \
+ flv,gme,gvfs,html,ices,icymetaint,id3v2,jack,karaoke,mad,m3u,mid1,midsquash,mms,modplug,mpg123,musepack,normalize, \
  null,nulstripper,ofa,oss,pls,pulse,replaygain,rss,samba,sndfile,speex,tta,vocoder,vorbis,wave,wavpack,xml,xspf"
 
 ./waf build -v %{?_smp_mflags}
@@ -116,15 +106,14 @@ chmod +x %{buildroot}%{_libdir}/xmms2/*
 %license COPYING.GPL
 %{_libdir}/xmms2/libxmms_faad.so
 
-%files -n xmms2-mms
-%license COPYING.LGPL
-%{_libdir}/xmms2/libxmms_mms.so
-
 %files -n xmms2-mp4
 %license COPYING.GPL
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Sun Nov 19 2023 Leigh Scott <leigh123linux@gmail.com> - 0.9.3-2
+- Drop mms plugin, fedora xmms2 provides it
+
 * Sat Nov 18 2023 Leigh Scott <leigh123linux@gmail.com> - 0.9.3-1
 - update to 0.9.3
 
