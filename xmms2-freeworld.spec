@@ -10,7 +10,7 @@ Source0:		https://github.com/xmms2/xmms2-devel/releases/download/%{version}/xmms
 BuildRequires:		gcc-c++
 BuildRequires:		sqlite-devel
 BuildRequires:		glib2-devel
-BuildRequires:		python2-devel
+BuildRequires:		python3
 # RPMFusion only BuildRequires
 BuildRequires:		faad2-devel
 %if 0%{?fedora} && 0%{?fedora} > 35
@@ -66,7 +66,7 @@ An XMMS2 Plugin for listening to MP4 audio files.
 %autosetup -p1 -n xmms2-%{version}
 
 for i in doc/tutorial/python/tut1.py doc/tutorial/python/tut2.py doc/tutorial/python/tut3.py doc/tutorial/python/tut4.py doc/tutorial/python/tut5.py doc/tutorial/python/tut6.py utils/gen-tree-hashes.py utils/gen-wiki-release-bugs.py utils/gen-tarball.py utils/gen-wiki-release-authors.py waf waftools/podselect.py waftools/genipc.py waftools/genipc_server.py waftools/cython.py; do
-	sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python2|g' $i
+	sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python3|g' $i
 done
 
 
