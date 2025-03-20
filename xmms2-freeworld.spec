@@ -1,23 +1,21 @@
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
 Version:		0.9.3
-Release:		4%{?dist}
+Release:		5%{?dist}
 License:		LGPL-2.1-or-later AND GPL-2.0-or-later AND BSD-3-Clause
-URL:			http://wiki.xmms2.xmms.se/
+URL:			https://wiki.xmms2.xmms.se/
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
 Source0:		https://github.com/xmms2/xmms2-devel/releases/download/%{version}/xmms2-%{version}.tar.xz
+
+Patch0:         https://github.com/xmms2/xmms2-devel/commit/0f056b735929971a4d663c1cbfb5152c8d7e08df.patch#/ffmpeg7.patch
 
 BuildRequires:		gcc-c++
 BuildRequires:		sqlite-devel
 BuildRequires:		glib2-devel
-BuildRequires:		python2-devel
+BuildRequires:		python3-devel
 # RPMFusion only BuildRequires
 BuildRequires:		faad2-devel
-%if 0%{?fedora} && 0%{?fedora} > 35
-BuildRequires:		compat-ffmpeg4-devel
-%else
 BuildRequires:		ffmpeg-devel
-%endif
 
 Requires:		xmms2-avcodec%{?_isa} = %{version}-%{release}
 Requires:		xmms2-faad%{?_isa} = %{version}-%{release}
@@ -66,16 +64,13 @@ An XMMS2 Plugin for listening to MP4 audio files.
 %autosetup -p1 -n xmms2-%{version}
 
 for i in doc/tutorial/python/tut1.py doc/tutorial/python/tut2.py doc/tutorial/python/tut3.py doc/tutorial/python/tut4.py doc/tutorial/python/tut5.py doc/tutorial/python/tut6.py utils/gen-tree-hashes.py utils/gen-wiki-release-bugs.py utils/gen-tarball.py utils/gen-wiki-release-authors.py waf waftools/podselect.py waftools/genipc.py waftools/genipc_server.py waftools/cython.py; do
-	sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python2|g' $i
+	sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python3|g' $i
 done
 
 
 %build
 export CFLAGS="%{optflags}"
 export CPPFLAGS="%{optflags}"
-%if 0%{?fedora} && 0%{?fedora} > 35
-export PKG_CONFIG_PATH="%{_libdir}/compat-ffmpeg4/pkgconfig"
-%endif
 ./waf configure --prefix=%{_prefix} \
  --libdir=%{_libdir} \
  --without-optionals="launcher,xmmsclient++,xmmsclient++-glib,perl,ruby,nycli,pixmaps,et,mdns, \
@@ -111,6 +106,9 @@ chmod +x %{buildroot}%{_libdir}/xmms2/*
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Thu Mar 20 2025 Leigh Scott <leigh123linux@gmail.com> - 0.9.3-5
+- Rebuild against ffmpeg-7 and python3
+
 * Fri Aug 02 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 0.9.3-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
 

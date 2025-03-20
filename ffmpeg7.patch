@@ -1,0 +1,64 @@
+From 0f056b735929971a4d663c1cbfb5152c8d7e08df Mon Sep 17 00:00:00 2001
+From: Sergei Trofimovich <slyich@gmail.com>
+Date: Sat, 21 Sep 2024 22:46:39 +0100
+Subject: [PATCH] avcodec: adapt to ffmpeg-7
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+ffmpeg-7 removed long deprecated API of accessing channels. As a result
+`xmms2` fails the build now against `ffmpeg-7.0.2` as:
+
+    ../src/plugins/avcodec/avcodec.c: In function ‘xmms_avcodec_init’:
+    ../src/plugins/avcodec/avcodec.c:225:23: error: ‘AVCodecContext’ has no member named ‘channels’
+      225 |         data->codecctx->channels = data->channels;
+          |                       ^~
+
+The change follows a trivial change of switching to new style similar to
+upstream example update at:
+
+    https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff/f5ef91e02080316f50d606f5b0b03333bb627ed7
+---
+ src/plugins/avcodec/avcodec.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/plugins/avcodec/avcodec.c b/src/plugins/avcodec/avcodec.c
+index f9558461a..1f0d9b761 100644
+--- a/src/plugins/avcodec/avcodec.c
++++ b/src/plugins/avcodec/avcodec.c
+@@ -222,7 +222,7 @@ xmms_avcodec_init (xmms_xform_t *xform)
+ 
+ 	data->codecctx = avcodec_alloc_context3 (codec);
+ 	data->codecctx->sample_rate = data->samplerate;
+-	data->codecctx->channels = data->channels;
++	data->codecctx->ch_layout.nb_channels = data->channels;
+ 	data->codecctx->bit_rate = data->bitrate;
+ 	data->codecctx->bits_per_coded_sample = data->samplebits;
+ 	data->codecctx->block_align = data->block_align;
+@@ -250,7 +250,7 @@ xmms_avcodec_init (xmms_xform_t *xform)
+ 	}
+ 
+ 	data->samplerate = data->codecctx->sample_rate;
+-	data->channels = data->codecctx->channels;
++	data->channels = data->codecctx->ch_layout.nb_channels;
+ 	data->sampleformat = xmms_avcodec_translate_sample_format (data->codecctx->sample_fmt);
+ 	if (data->sampleformat == XMMS_SAMPLE_FORMAT_UNKNOWN) {
+ 		avcodec_close (data->codecctx);
+@@ -270,7 +270,7 @@ xmms_avcodec_init (xmms_xform_t *xform)
+ 
+ 	XMMS_DBG ("Decoder %s at rate %d with %d channels of format %s initialized",
+ 	          codec->name, data->codecctx->sample_rate,
+-	          data->codecctx->channels,
++	          data->codecctx->ch_layout.nb_channels,
+ 	          av_get_sample_fmt_name (data->codecctx->sample_fmt));
+ 
+ 	return TRUE;
+@@ -504,7 +504,7 @@ xmms_avcodec_internal_append (xmms_avcodec_data_t *data)
+ {
+ 	enum AVSampleFormat fmt = (enum AVSampleFormat) data->read_out_frame->format;
+ 	int samples = data->read_out_frame->nb_samples;
+-	int channels = data->codecctx->channels;
++	int channels = data->codecctx->ch_layout.nb_channels;
+ 	int bps = av_get_bytes_per_sample (fmt);
+ 
+ 	if (av_sample_fmt_is_planar (fmt)) {
