@@ -1,6 +1,6 @@
 Name:			xmms2-freeworld
 Summary:		Plugins for XMMS2 that cannot be included in Fedora
-Version:		0.9.4
+Version:		0.9.5
 Release:		1%{?dist}
 License:		LGPL-2.1-or-later AND GPL-2.0-or-later AND BSD-3-Clause
 URL:			http://wiki.xmms2.xmms.se/
@@ -13,11 +13,7 @@ BuildRequires:		glib2-devel
 BuildRequires:		python3
 # RPMFusion only BuildRequires
 BuildRequires:		faad2-devel
-%if 0%{?fedora} && 0%{?fedora} > 35
-BuildRequires:		compat-ffmpeg4-devel
-%else
 BuildRequires:		ffmpeg-devel
-%endif
 
 Requires:		xmms2-avcodec%{?_isa} = %{version}-%{release}
 Requires:		xmms2-faad%{?_isa} = %{version}-%{release}
@@ -73,9 +69,6 @@ done
 %build
 export CFLAGS="%{optflags}"
 export CPPFLAGS="%{optflags}"
-%if 0%{?fedora} && 0%{?fedora} > 35
-export PKG_CONFIG_PATH="%{_libdir}/compat-ffmpeg4/pkgconfig"
-%endif
 ./waf configure --prefix=%{_prefix} \
  --libdir=%{_libdir} \
  --without-optionals="launcher,xmmsclient++,xmmsclient++-glib,perl,ruby,nycli,pixmaps,et,mdns, \
@@ -111,6 +104,9 @@ chmod +x %{buildroot}%{_libdir}/xmms2/*
 %{_libdir}/xmms2/libxmms_mp4.so
 
 %changelog
+* Thu Mar 20 2025 Leigh Scott <leigh123linux@gmail.com> - 0.9.5-1
+- Update to 0.9.5
+
 * Sat Feb 01 2025 Leigh Scott <leigh123linux@gmail.com> - 0.9.4-1
 - Update to 0.9.4
 
