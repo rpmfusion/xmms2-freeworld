@@ -6,6 +6,7 @@ License:		LGPL-2.1-or-later AND GPL-2.0-or-later AND BSD-3-Clause
 URL:			http://wiki.xmms2.xmms.se/
 # Fedora's xmms2 has to use a sanitized tarball, we don't.
 Source0:		https://github.com/xmms2/xmms2-devel/releases/download/%{version}/xmms2-%{version}.tar.xz
+Patch0:         ffmpeg-8.patch
 
 BuildRequires:		gcc-c++
 BuildRequires:		sqlite-devel
@@ -21,14 +22,14 @@ Requires:		xmms2-mp4%{?_isa} = %{version}-%{release}
 
 
 %description
-XMMS2 is an audio framework, but it is not a general multimedia player - it 
-will not play videos. It has a modular framework and plugin architecture for 
-audio processing, visualisation and output, but this framework has not been 
-designed to support video. Also the client-server design of XMMS2 (and the 
-daemon being independent of any graphics output) practically prevents direct 
-video output being implemented. It has support for a wide range of audio 
-formats, which is expandable via plugins. It includes a basic CLI interface 
-to the XMMS2 framework, but most users will want to install a graphical XMMS2 
+XMMS2 is an audio framework, but it is not a general multimedia player - it
+will not play videos. It has a modular framework and plugin architecture for
+audio processing, visualisation and output, but this framework has not been
+designed to support video. Also the client-server design of XMMS2 (and the
+daemon being independent of any graphics output) practically prevents direct
+video output being implemented. It has support for a wide range of audio
+formats, which is expandable via plugins. It includes a basic CLI interface
+to the XMMS2 framework, but most users will want to install a graphical XMMS2
 client (such as gxmms2 or esperanza).
 
 %package -n xmms2-avcodec
@@ -47,7 +48,7 @@ License:	GPLv2+
 Requires:	xmms2%{?_isa} = %{version}
 
 %description -n xmms2-faad
-An XMMS2 Plugin which provides support for audio formats provided by FAAD 
+An XMMS2 Plugin which provides support for audio formats provided by FAAD
 (AAC and MP4).
 
 %package -n xmms2-mp4
@@ -83,7 +84,7 @@ export CPPFLAGS="%{optflags}"
 ./waf install --destdir=%{buildroot} --prefix=%{_prefix} --libdir=%{_libdir} --with-pkgconfigdir=%{_libdir}/pkgconfig
 
 # There are lots of things that get built that we don't need to package, because they're in the Fedora xmms2 package.
-rm -rf %{buildroot}%{_bindir} %{buildroot}%{_libdir}/libxmmsclient* %{buildroot}%{_mandir} %{buildroot}%{_datadir} %{buildroot}%{_includedir} %{buildroot}%{_libdir}/pkgconfig 
+rm -rf %{buildroot}%{_bindir} %{buildroot}%{_libdir}/libxmmsclient* %{buildroot}%{_mandir} %{buildroot}%{_datadir} %{buildroot}%{_includedir} %{buildroot}%{_libdir}/pkgconfig
 
 # exec flags for debuginfo
 chmod +x %{buildroot}%{_libdir}/xmms2/*

@@ -1,0 +1,50 @@
+From 62d4d4d85bceebcdb37a73d311283d604e930df7 Mon Sep 17 00:00:00 2001
+From: Ionen Wolkens <ionen@gentoo.org>
+Date: Mon, 18 Aug 2025 04:00:52 -0400
+Subject: [PATCH] avcodec: replace deprecated avcodec_close by
+ avcodec_free_context
+
+avcodec_close is being removed in ffmpeg-8
+---
+ src/plugins/avcodec/avcodec.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/src/plugins/avcodec/avcodec.c b/src/plugins/avcodec/avcodec.c
+index 49487f505..7ce3d68b9 100644
+--- a/src/plugins/avcodec/avcodec.c
++++ b/src/plugins/avcodec/avcodec.c
+@@ -130,8 +130,7 @@ xmms_avcodec_destroy (xmms_xform_t *xform)
+ 	data = xmms_xform_private_data_get (xform);
+ 	g_return_if_fail (data);
+ 
+-	avcodec_close (data->codecctx);
+-	av_free (data->codecctx);
++	avcodec_free_context (&(data->codecctx));
+ 	av_frame_free (&data->read_out_frame);
+ 
+ 	g_string_free (data->outbuf, TRUE);
+@@ -251,7 +250,6 @@ xmms_avcodec_init (xmms_xform_t *xform)
+ 			g_string_insert_len (data->outbuf, 0, buf, ret);
+ 		} else {
+ 			XMMS_DBG ("First read failed, codec is not working...");
+-			avcodec_close (data->codecctx);
+ 			goto err;
+ 		}
+ 	}
+@@ -260,7 +258,6 @@ xmms_avcodec_init (xmms_xform_t *xform)
+ 	data->channels = XMMS2_AVCODEC_CHANNEL_FIELD(data->codecctx);
+ 	data->sampleformat = xmms_avcodec_translate_sample_format (data->codecctx->sample_fmt);
+ 	if (data->sampleformat == XMMS_SAMPLE_FORMAT_UNKNOWN) {
+-		avcodec_close (data->codecctx);
+ 		goto err;
+ 	}
+ 
+@@ -284,7 +281,7 @@ xmms_avcodec_init (xmms_xform_t *xform)
+ 
+ err:
+ 	if (data->codecctx) {
+-		av_free (data->codecctx);
++		avcodec_free_context (&(data->codecctx));
+ 	}
+ 	if (data->read_out_frame) {
+ 		avcodec_free_frame (&data->read_out_frame);
